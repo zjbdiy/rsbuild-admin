@@ -11,11 +11,13 @@ export default [
   ...ts.configs.recommended,
   { ignores: ['dist/'] },
   ...pluginVue.configs['flat/recommended'],
+  eslintPluginPrettierRecommended,
   {
-    rules: {
-      'no-unused-vars': 'error',
-      'no-undef': 'error',
+    files: ['*.vue', '**/*.vue'],
+    languageOptions: {
+      parserOptions: {
+        parser: '@typescript-eslint/parser',
+      },
     },
   },
-  eslintPluginPrettierRecommended,
 ];
