@@ -10,7 +10,9 @@
     "preview": "rsbuild preview"
   },
   "dependencies": {
+    "alova": "^3.0.20",
     "pinia": "^2.2.4",
+    "pinia-plugin-persistedstate": "^4.1.1",
     "vue": "^3.5.3",
     "vue-router": "4"
   },

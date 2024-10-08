@@ -1,17 +1,18 @@
 <template>
-  <div>
+  <div class="login">
     <n-form
       ref="formRef"
-      inline
-      :label-width="80"
+      label-width="auto"
       :model="formValue"
       :rules="rules"
+      label-placement="left"
     >
-      <n-form-item label="姓名" path="user.name">
+      <n-form-item label="账套" path="user.name">
         <n-select
           v-model:value="formValue.user.bookId"
           :options="bookOptions"
           placeholder="选择账套"
+          @update:value="bookChange"
         />
       </n-form-item>
 
@@ -35,15 +36,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { FormInst } from 'naive-ui';
 import type { SelectOption } from 'naive-ui';
+
+import http from '../alova/index.ts';
+import { usePersistStore } from '../pinia/persistStore';
+
+const store = usePersistStore();
 
 const formValue = ref({
   user: {
     name: '',
     age: '',
-    bookId: '',
+    bookId: 'test1',
   },
 });
 
@@ -60,12 +66,52 @@ const rules = {
   },
 };
 
-const bookOptions = ref<SelectOption[]>();
+const bookOptions = ref<SelectOption[]>([
+  {
+    label: 'test1',
+    value: 'test1',
+  },
+]);
 
 const formRef = ref<FormInst | null>(null);
 const handleValidateClick = () => {
   console.log(formValue.value);
 };
+
+const fetchBookOptions = async () => {
+  const books: any[] = await http.Post('/api/Factory/Books');
+
+  bookOptions.value.splice(0, bookOptions.value.length);
+  books.forEach((x) => {
+    bookOptions.value.push({
+      label: x.name,
+      value: x.bookId,
+    });
+  });
+};
+
+onMounted(() => {
+  fetchBookOptions();
+});
+
+const bookChange = (value: string) => {
+  //console.log(store);
+  store.setBookId(value);
+};
 </script>
 
-<style scoped></style>
+<style scoped lang="less">
+.login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.login form {
+  height: 300px;
+  padding-left: 200px;
+  padding-top: 50px;
+  background-color: aquamarine;
+}
+</style>
